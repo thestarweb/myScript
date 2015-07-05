@@ -51,7 +51,7 @@ if(top&&(cap=this.rules.paragraph.exec(src))){src=src.substring(cap[0].length);t
 if(cap=this.rules.text.exec(src)){src=src.substring(cap[0].length);this.tokens.push({type:'text',text:cap[0]});continue;}
 if(src){throw new
 Error('Infinite loop on byte: '+src.charCodeAt(0));}}
-return this.tokens;};var inline={escape:/^\\([\\`*{}\[\]()#+\-.!_>])/,autolink:/^<([^ >]+(@|:\/)[^ >]+)>/,url:noop,tag:/^<!--[\s\S]*?-->|^<\/?\w+(?:"[^"]*"|'[^']*'|[^'">])*?>/,link:/^.?\[(inside)\]\(href\)/,reflink:/^!?\[(inside)\]\s*\[([^\]]*)\]/,nolink:/^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]/,strong:/^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)/,em:/^\b_((?:__|[\s\S])+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,code:/^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)/,br:/^ {2,}\n(?!\s*$)/,del:noop,text:/^[\s\S]+?(?=[\\<!\[_*`\(\$)]| {2,}\n|$)/,color:/^\((#[0-9A-Fa-f]{3})\)\[(.*?)\]/};inline._inside=/(?:\[[^\]]*\]|[^\]]|\](?=[^\[]*\]))*/;inline._href=/\s*<?([^\s]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/;inline.link=replace(inline.link)
+return this.tokens;};var inline={escape:/^\\([\\`*{}\[\]()#+\-.!_>])/,autolink:/^<([^ >]+(@|:\/)[^ >]+)>/,url:noop,tag:/^<!--[\s\S]*?-->|^<\/?\w+(?:"[^"]*"|'[^']*'|[^'">])*?>/,link:/^.?\[(inside)\]\(href(?: (w|h)=(\d+)(%)?)?(?: (w|h)=(\d+)(%)?)?\)/,reflink:/^!?\[(inside)\]\s*\[([^\]]*)\]/,nolink:/^!?\[((?:\[[^\]]*\]|[^\[\]])*)\]/,strong:/^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)/,em:/^\b_((?:__|[\s\S])+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,code:/^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)/,br:/^ {2,}\n(?!\s*$)/,del:noop,text:/^[\s\S]+?(?=[\\<!\[_*`\(\$)]| {2,}\n|$)/,color:/^\((#[0-9A-Fa-f]{3})\)\[(.*?)\]/};inline._inside=/(?:\[[^\]]*\]|[^\]]|\](?=[^\[]*\]))*/;inline._href=/\s*<?([^\s]*?)>?(?:\s+['"]([\s\S]*?)['"])?\s*/;inline.link=replace(inline.link)
 ('inside',inline._inside)
 ('href',inline._href)
 ();inline.reflink=replace(inline.reflink)
@@ -111,6 +111,13 @@ return out;};InlineLexer.prototype.outputLink=function(cap,link){if(cap[0][0]=='
 +'" alt="'
 +escape(cap[1])
 +'"'
++(cap[4]?' style="'+(cap[4]=='w'?'width':'height')+':'
++cap[5]
++(cap[6]?'%;':'px;')
++(cap[7]?(cap[7]=='w'?'width':'height')+':'
++cap[8]
++(cap[9]?'%;':'px;'):'')
++'"':'')
 +(link.title?' title="'
 +escape(link.title)
 +'"':'')
