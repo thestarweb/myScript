@@ -18,8 +18,13 @@ var myScript = {
 		ajax.send();*/
 		return s;
 	},
-	marked:function(mk,fun){
+	marked:function(mk,fun,ob){
 		//mk=mk.replace('$',"\n\n$");
+		if(ob){
+			for(var i in ob){
+				mk=mk.replace('{$'+i+'}',ob[i]);
+			}
+		}
 		if(typeof(marked)!='function'){
 			var s=this.include('marked.js');
 			s.onload=function(){

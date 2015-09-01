@@ -1,4 +1,4 @@
-myScript._input=function (id,width,height) {
+myScript._input=function (id,width,height,ob) {
 	//外部div初始化
 	if (!width || width < 200) {
 		width =400;
@@ -54,7 +54,7 @@ myScript._input=function (id,width,height) {
 				if(--i==0){
 					myScript.marked(input.value,function(html){
 						out.innerHTML=html;
-					})
+					},ob)
 				}
 			},800)
 		}
