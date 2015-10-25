@@ -22,7 +22,7 @@ var myScript = {
 		//mk=mk.replace('$',"\n\n$");
 		if(ob){
 			for(var i in ob){
-				mk=mk.replace('{$'+i+'}',ob[i]);
+				mk=mk.replace(new RegExp('\\{\\$'+i+'\\}','g'),ob[i]);
 			}
 		}
 		if(typeof(marked)!='function'){
