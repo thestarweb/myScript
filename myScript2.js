@@ -1,5 +1,5 @@
 var myScript = {
-	root:'http://static.thestarweb.sweb/',
+	root:document.currentScript.src.substr(0,document.currentScript.src.lastIndexOf('/')+1),
 	include:function(src){
 		var s=document.getElementsByTagName('script');
 		for (var i = 0; i < s.length; i++) {
@@ -213,6 +213,7 @@ var myScript = {
 			if(this.setHead){
 				this.ajax.setRequestHeader("content-type", "application/x-www-form-urlencoded");
 			};
+			//this.ajax.setRequestHeader('X_REQUESTED_WITH','ajax');
 			if(this.withCredentials)this.ajax.withCredentials = true;
 			//回调函数
 			this.ajax.onreadystatechange =(function(obj){
