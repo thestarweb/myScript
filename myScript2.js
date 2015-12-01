@@ -1,5 +1,5 @@
 var myScript = {
-	root:document.currentScript.src.substr(0,document.currentScript.src.lastIndexOf('/')+1),
+	root:'',//document.currentScript.src.substr(0,document.currentScript.src.lastIndexOf('/')+1),
 	include:function(src){
 		var s=document.getElementsByTagName('script');
 		for (var i = 0; i < s.length; i++) {
@@ -378,6 +378,16 @@ var myScript = {
 		return '未知浏览器';
 	}
 };
+try{
+	myScript.root=document.currentScript.src.substr(0,document.currentScript.src.lastIndexOf('/')+1);
+}catch(e){
+	for(var i=document.scripts.length;i>0;i--){
+		if(document.scripts[i-1].src.indexOf("myScript2.js")>-1){
+			myScript.root=document.scripts[i-1].src.substring(0,document.scripts[i-1].src.lastIndexOf("/")+1);
+			break;
+		}
+	}
+}
 function $(s) {
 	if (typeof (s) == 'string') {
 		return myScript.$get(s);
