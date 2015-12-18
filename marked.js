@@ -141,13 +141,14 @@ case'heading':{return'<h'
 +'>\n';}
 case'code':{if(this.options.highlight){var code=this.options.highlight(this.token.text,this.token.lang);if(code!=null&&code!==this.token.text){this.token.escaped=true;this.token.text=code;}}
 if(!this.token.escaped){this.token.text=escape(this.token.text,true);}
-return'<pre><code'
+//alert(this.token.text.replace(/&lt;/,'<'))
+return'<pre style="overflow:auto;"><code'
 +(this.token.lang?' class="'
 +this.options.langPrefix
 +this.token.lang
 +'"':'')
 +'>'
-+this.token.text
++'<ol><li>'+this.token.text.replace(/&amp;/g,'&').replace(/\n/g,'</li><li>')+'</li></ol>'
 +'</code></pre>\n';}
 case'table':{var body='',heading,i,row,cell,j;body+='<thead>\n<tr>\n';for(i=0;i<this.token.header.length;i++){heading=this.inline.output(this.token.header[i]);body+=this.token.align[i]?'<th align="'+this.token.align[i]+'">'+heading+'</th>\n':'<th>'+heading+'</th>\n';}
 body+='</tr>\n</thead>\n';body+='<tbody>\n'
