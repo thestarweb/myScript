@@ -48,7 +48,7 @@ myScript._input=function (id,width,height,ob) {
 	var out=this.output;var input=this.input;
 	this.input.onkeydown=(function(){
 		var i=0
-		return function(){
+		return function(ev){
 			i++;
 			setTimeout(function(){
 				if(--i==0){
@@ -56,7 +56,14 @@ myScript._input=function (id,width,height,ob) {
 						out.innerHTML=html;
 					},ob)
 				}
-			},800)
+			},800);
+			if(ev.keyCode==9){
+				var s= this.selectionStart
+				this.value = this.value.substring(0,s)+"\t"+this.value.substring(s);
+				ev.preventDefault();
+				 this.selectionStart=this.selectionEnd=s+1;
+				return false;
+			}
 		}
 	})();
 	
