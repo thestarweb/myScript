@@ -249,25 +249,56 @@ var myScript = {
 		data&&ajax.setCont(data);
 		ajax.send();
 	},
-	$get:function(name){
-		if (name[0] == '#') {
-			return document.getElementById(name.substr(1));
-		} else if (name[0] == '.') {
-			var dom=document.getElementsByClassName(name.substr(1));
-		} else if (name[0] == '@') {
-			var dom=document.getElementsByName(name.substr(1));
-		} else {
-			var dom=document.getElementsByTagName(name);
+	$get:function(names,p){
+		p=p||document;//从哪个节点取
+		var index,dom;
+		if((index=names.indexOf(' '))>0){//是否有子选择器
+			name=names.substr(0,index);
+		}else{
+			name=names;
 		}
-		dom.set=function (name,value,nu){
-			for(var i=0;this[i];i++){
-				if(!nu){
-					this[i][name]=value;
-				}else if(myScript.in_array(i,nu)){
-					this[i][name]=value;
-				}
+		if (name[0] == '#') {
+			dom= p.getElementById(name.substr(1));
+			if(names.length==name.length){
+				return dom;
+			}else{
+				dom=[dom];
 			}
-			return this;
+		} else if (name[0] == '.') {
+			dom=p.getElementsByClassName(name.substr(1));
+		} else if (name[0] == '@') {
+			dom=p.getElementsByName(name.substr(1));
+		} else {
+			dom=p.getElementsByTagName(name);
+		}
+		if(names.length!=name.length){
+			var res=[];
+			for(var i=0;i<dom.length;i++){
+				res=res.concat(Array.prototype.slice.call(this.$get(names.substr(index+1),dom[i]),0));//把子节点组转换成数组合并进数组
+			}
+			dom=res;
+		}
+		if(document==p){//递归调用最外层
+			dom.set=function (name,value,nu){
+				for(var i=0;this[i];i++){
+					if(!nu){
+						this[i][name]=value;
+					}else if(myScript.in_array(i,nu)){
+						this[i][name]=value;
+					}
+				}
+				return this;
+			}
+			dom.set_style=function (name,value,nu){
+				for(var i=0;this[i];i++){
+					if(!nu){
+						this[i].style[name]=value;
+					}else if(myScript.in_array(i,nu)){
+						this[i].style[name]=value;
+					}
+				}
+				return this;
+			}
 		}
 		return dom;
 	},
