@@ -26,6 +26,7 @@
 						break;
 					case 'script':
 						res+='#A00';
+						if(cap[2].length==4)b_type="script";
 						break;
 					default:
 						res+='#F80';
@@ -48,6 +49,11 @@
 				res+="</span>";
 				if(b_type=="style"){
 					var temp=code_css(string,true);
+					string=temp.s;
+					res+=temp.r;
+					b_type='';
+				}else if(b_type=="script"){
+					var temp=code_js(string,true);
 					string=temp.s;
 					res+=temp.r;
 					b_type='';
@@ -76,7 +82,6 @@ function code_css(string,b){
 				res+='<span style="color:#A82;">'+cap[1]+cap[2]+'</span>'+cap[3]+cap[4];
 				if(cap[4]=='{') ins=true;
 			}
-			if(!cap[0]) alert(cap);
 			string=string.substr(cap[0].length);
 		}else if(b&&string.indexOf('&lt;/style&gt;')==0){
 			return {s:string,r:res};
@@ -88,3 +93,63 @@ function code_css(string,b){
 	}
 	return b?{s:'',r:res}:res;
 }
+function code_js(string,b){
+	var cap,res="";
+	while(string.length>0){
+		cap=/^([\n\r\t ]|<li>|<\/li>)*/.exec(string);
+		if(cap){
+			res+=cap[0];
+			string=string.substr(cap[0].length);
+		}
+		if(b&&string.indexOf('&lt;/script&gt;')==0){
+			return {s:string,r:res};
+		}
+		cap=/^(?:var|new|function|document|(\/\/.*?)(<\/li>)|(0x)?\d|\+|-|\*|\/|=)/i.exec(string);
+		if(cap){
+			if(cap[2]){
+				res+='<span style="color:green;">'+cap[1]+'</span></li>';
+			}else{
+				res+='<span style="color:';
+				switch(cap[0]){
+					case 'var':
+						res+='#8A0';	
+						break;
+					case 'function':
+						res+='#0A0';
+						break;
+					case 'new':
+						res+='#A80';
+						break;
+					case 'document':
+						res+='#80A';
+						break;
+					case '+':
+					case '-':
+					case '*':
+					case '/':
+					case '=':
+						res+='orange';
+						break;
+					default:
+						res+='#00F';
+				}
+				res+=';">'+cap[0]+'</span>';
+			}
+			string=string.substr(cap[0].length);
+		}else if(b&&string.indexOf('&lt;/script&gt;')==0){
+			return {s:string,r:res};
+		}else{
+			if(string){
+				res+=string[0];
+				string=string.substr(1);
+			}
+		}
+	}
+	return b?{s:'',r:res}:res;
+}
+(function(){
+	var list=$('.mk pre .lang-javascript ol');
+	for(var i=0;i<list.length;i++){
+		list[i].innerHTML=code_js(list[i].innerHTML);
+	}
+})();
