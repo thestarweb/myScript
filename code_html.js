@@ -104,10 +104,12 @@ function code_js(string,b){
 		if(b&&string.indexOf('&lt;/script&gt;')==0){
 			return {s:string,r:res};
 		}
-		cap=/^(?:(?:var|new|function|document|\d+|0x[\da-f]+)(?=\W)|(\/\/.*?)(<\/li>)|\+|-|\*|\/|=)/i.exec(string);
+		cap=/^(?:(?:var|new|function|document|window|this|\d+|0x[\da-f]+)(?=\W)|(\/\/.*?)(<\/li>)|\+|-|\*|\/|=|("|').*?[^\\]\3|("|')\3)/i.exec(string);
 		if(cap){
 			if(cap[2]){
 				res+='<span style="color:green;">'+cap[1]+'</span></li>';
+			}else if(cap[3]){
+				res+='<span style="color:green;">'+cap[0]+'</span>';
 			}else{
 				res+='<span style="color:';
 				switch(cap[0]){
