@@ -104,7 +104,7 @@ function code_js(string,b){
 		if(b&&string.indexOf('&lt;/script&gt;')==0){
 			return {s:string,r:res};
 		}
-		cap=/^(?:var|new|function|document|(\/\/.*?)(<\/li>)|(0x)?\d|\+|-|\*|\/|=)/i.exec(string);
+		cap=/^(?:(?:var|new|function|document|\d+|0x[\da-f]+)(?=\W)|(\/\/.*?)(<\/li>)|\+|-|\*|\/|=)/i.exec(string);
 		if(cap){
 			if(cap[2]){
 				res+='<span style="color:green;">'+cap[1]+'</span></li>';
