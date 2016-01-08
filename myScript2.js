@@ -11,6 +11,17 @@ var myScript = {
 		}
 		return '';
 	})(),
+	getCaller:function(len){
+		if(!len) var res=[];
+		var caller=arguments.callee.caller;
+		for(var i=0;i<len||!len&&caller;i++){
+			if(!len){
+				res.push(caller.toString());
+			}
+			caller=caller.arguments.callee.caller;
+		}
+		return len?(caller?caller.toString():main):res;
+	},
 	include:function(src){
 		//document.write('<script src="'+this.root+src+'" ><\/script>');
 		var s=myScript.set_dom('script',document.body);
@@ -66,128 +77,24 @@ var myScript = {
 		}
 	},
 	html_to_ubb:function(html,array){
-		if(typeof(html)!='string') return false;
-		if(typeof (array)=='string'){
-			array=[array];
-		}
-		if(array){
-			for (var i in array) {
-				eval('html=html.replace(/<'+array[i]+'(.*?)>(.*?)<\\/'+array[i]+'>/gi,"['+array[i]+'$1]$2[/'+array[i]+']")');
-				eval('html=html.replace(/<'+array[i]+'(.*?)>/gi,"['+array[i]+'$1]")');
-			};
-		}
-		ubb=html.replace(/<.*?>/gi,"");
-		return ubb;
+		var info='此api（html_to_ubb）过旧，可能存在安全隐患及其他BUG，已被myScript脚本开发者移出，如果你是用户，请通知网站开发人员更新';
+		this.show(info,290,150)
+		console.log(info+'\n'+'调用位置：'+this.getCaller(1));
 	},
 	ubb_to_html:function(ubb,array){
-		if(typeof(ubb)!='string') return false;
-		if(typeof (array)=='string'){
-			array=[array];
-		}
-		if(array){
-			for (var i in array) {
-				eval('ubb=ubb.replace(/\\['+array[i]+'(.*?)\\](.*?)\\[\\/'+array[i]+'\\]/gi,"<'+array[i]+'$1>$2</'+array[i]+'>")');
-				eval('ubb=ubb.replace(/\\['+array[i]+'(.*?)\\]/gi,"<'+array[i]+'$1>")');
-			};
-		}
-		html=ubb.replace(/\[.*?\]/gi,"");
-		return html;
+		var info='此api（ubb_to_html）过旧，可能存在安全隐患及其他BUG，已被myScript脚本开发者移出，如果你是用户，请通知网站开发人员更新';
+		this.show(info,290,150)
+		console.log(info+'\n'+'调用位置：'+this.getCaller(1));
 	},
 	html_sh:function(html,ruler){
-		var ruler_array=ruler.split(";");
-		for(i in ruler_array){
-			if(!ruler_array[i]) continue;//拆分导致的空规则
-			var a_ruler=ruler_array[i].split(":");//一条规则
-			reg=eval('/<'+a_ruler[0]+'( [a-z]+\=(?:\'|\").+(?:\'|\"))* ?(>.*?<\\/'+a_ruler[0]+'>|\\/?>)/gi');
-		//alert(reg);
-			html=html.replace(reg,function(a){
-				//alert(a)
-				var strs=a.split(/(?:<|>)/gi);
-				var b=strs[1].split(' ');
-				var news='['+b[0];
-				var c;
-				//拆分出的数组第一位为空   格式类似\0<\1>\2(<\3>\4)
-				if(b[1]){
-					if(a_ruler.length>=2){//对参数有要求
-						b=b[1].split(' ');//拆分参数
-						c_ruler=a_ruler[1].split(',');//参数规则
-						for(var j=0;j<b.length;j++){
-							//alert(b[j]);
-							if(myScript.in_array(b[j].split('=')[0],c_ruler)){//允许的参数才拼接
-								news+=' '+b[j];
-							}
-						}
-					}else {//对参数无要求，直接通过
-						for(var k=1;k<b.length;k++){
-							news+=' '+b[k];
-						}
-					}
-				}
-				if(strs[2]||strs[3]){
-					if(strs[3]){
-						news+=']'+strs[2]+'['+strs[3]+']';
-					}else if(strs[2][0]=='/'){
-						news+=']['+strs[2]+']';
-					}else{
-						news+=']'+strs[2];
-					}
-				}else{
-					news+=']';
-				}
-				//alert(news);
-				return news;
-			});
-		}
-			return html.replace(/<.*?>/gi,"");
+		var info='此api（html_sh）过旧，可能存在安全隐患及其他BUG，已被myScript脚本开发者移出，如果你是用户，请通知网站开发人员更新';
+		this.show(info,290,150)
+		console.log(info+'\n'+'调用位置：'+this.getCaller(1));
 	},
 	sh_html:function(sh,ruler){
-		var ruler_array=ruler.split(";");
-		//alert(1);
-		for(i in ruler_array){
-			if(!ruler_array[i]) continue;//拆分导致的空规则
-			var a_ruler=ruler_array[i].split(":");//一条规则
-			//alert(a_ruler);
-			reg=eval('/\\['+a_ruler[0]+'( [a-z]+\=(?:\'|\").+(?:\'|\"))* ?(\\].*?\\[\\/'+a_ruler[0]+'\\]|\\/?\\])/gi');
-			//alert(reg);
-			sh=sh.replace(reg,function(a){
-				var strs=a.split(/\[|\]/gi);
-				//alert(strs);
-				var b=strs[1].split(' ');
-				var news='<'+b[0];
-				var c;
-				//拆分出的数组第一位为空   格式类似\0<\1>\2(<\3>\4)
-				if(b[1]){
-					if(a_ruler.length>=2){//对参数有要求
-						b=b[1].split(' ');//拆分参数
-						c_ruler=a_ruler[1].split(',');//参数规则
-						for(var j=0;j<b.length;j++){
-							//alert(b[j]);
-							if(myScript.in_array(b[j].split('=')[0],c_ruler)){//允许的参数才拼接
-								news+=' '+b[j];
-							}
-						}
-					}else {//对参数无要求，直接通过
-						for(var k=1;k<b.length;k++){
-							news+=' '+b[k];
-						}
-					}
-				}
-				if(strs[2]||strs[3]){
-					if(strs[3]){
-						news+='>'+strs[2]+'<'+strs[3]+'>';
-					}else if(strs[2][0]=='/'){
-						news+='><'+strs[2]+'>';
-					}else{
-						news+='>'+strs[2];
-					}
-				}else{
-					news+='>';
-				}
-				//alert(news);
-				return news;
-			});
-		}
-			return sh;
+		var info='此api（sh_html）过旧，可能存在安全隐患及其他BUG，已被myScript脚本开发者移出，如果你是用户，请通知网站开发人员更新';
+		this.show(info,290,150)
+		console.log(info+'\n'+'调用位置：'+this.getCaller(1));
 	},
 
 	in_array: function(str,arr){
@@ -422,6 +329,7 @@ var myScript = {
 		return '未知浏览器';
 	}
 };
+
 function $(s) {
 	if (typeof (s) == 'string') {
 		return myScript.$get(s);
