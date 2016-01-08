@@ -1,10 +1,17 @@
 var myScript = {
-	root:'',//document.currentScript.src.substr(0,document.currentScript.src.lastIndexOf('/')+1),
-	include:function(src){
-		var s=document.getElementsByTagName('script');
-		for (var i = 0; i < s.length; i++) {
-			if(s[i].src==src) return;
+	root:(function(){
+		try{
+			return document.currentScript.src.substr(0,document.currentScript.src.lastIndexOf('/')+1);
+		}catch(e){
+			for(var i=document.scripts.length;i>0;i--){
+				if(document.scripts[i-1].src.indexOf("myScript2.js")>-1){
+					return document.scripts[i-1].src.substring(0,document.scripts[i-1].src.lastIndexOf("/")+1);
+				}
+			}
 		}
+		return '';
+	})(),
+	include:function(src){
 		//document.write('<script src="'+this.root+src+'" ><\/script>');
 		var s=myScript.set_dom('script',document.body);
 		s.src=this.root+src;
@@ -17,6 +24,13 @@ var myScript = {
 		}
 		ajax.send();*/
 		return s;
+	},
+	include_once:function(src){
+		var list=this.$get('script');
+		for(var i=0;i<list.length;i++){
+			if(list[i].src==src) return list[i];
+		}
+		return this.include(src);
 	},
 	marked:function(mk,fun,ob){
 		//mk=mk.replace('$',"\n\n$");
@@ -127,7 +141,6 @@ var myScript = {
 			return html.replace(/<.*?>/gi,"");
 	},
 	sh_html:function(sh,ruler){
-		//alert(ruler);//return 123;
 		var ruler_array=ruler.split(";");
 		//alert(1);
 		for(i in ruler_array){
@@ -409,16 +422,6 @@ var myScript = {
 		return '未知浏览器';
 	}
 };
-try{
-	myScript.root=document.currentScript.src.substr(0,document.currentScript.src.lastIndexOf('/')+1);
-}catch(e){
-	for(var i=document.scripts.length;i>0;i--){
-		if(document.scripts[i-1].src.indexOf("myScript2.js")>-1){
-			myScript.root=document.scripts[i-1].src.substring(0,document.scripts[i-1].src.lastIndexOf("/")+1);
-			break;
-		}
-	}
-}
 function $(s) {
 	if (typeof (s) == 'string') {
 		return myScript.$get(s);
