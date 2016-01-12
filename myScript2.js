@@ -23,9 +23,10 @@ var myScript = {
 		return len?(caller?caller.toString():main):res;
 	},
 	include:function(src){
+		if(src.indexOf('//')) src=this.root+src;
 		//document.write('<script src="'+this.root+src+'" ><\/script>');
 		var s=myScript.set_dom('script',document.body);
-		s.src=this.root+src;
+		s.src=src;
 		/*var ajax=myScript.ajax();
 		ajax.keep=true;
 		ajax.page=this.root+src;
@@ -37,6 +38,7 @@ var myScript = {
 		return s;
 	},
 	include_once:function(src){
+		if(src.indexOf('//')) src=this.root+src;
 		var list=this.$get('script');
 		for(var i=0;i<list.length;i++){
 			if(list[i].src==src) return list[i];
@@ -51,7 +53,7 @@ var myScript = {
 			}
 		}
 		if(typeof(marked)!='function'){
-			var s=this.include('marked.js');
+			var s=this.include_once('marked.js');
 			s.onload=function(){
 				fun(marked(mk));
 			}
@@ -69,7 +71,7 @@ var myScript = {
 			myScript.copyTo(new myScript._input(id,width,height,ruler),this);
 			return;
 		}
-		var s=myScript.include('myScript2_input.js');
+		var s=myScript.include_once('myScript2_input.js');
 		//this={get:function(){alert('load_error')}};
 		var temp=this;
 		s.onload=function(){
