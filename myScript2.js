@@ -61,6 +61,12 @@ var myScript = {
 			fun(marked(mk));
 		}
 	},
+	marked_dom:function(dom,ob,mk){
+		if(!mk) mk=dom.innerHTML;
+		this.marked(mk,function(res){
+			dom.innerHTML=res;
+		},ob)
+	},
 	copyTo:function(from,to){//实现马甲对象
 		for(var i in from){
 			to[i]=from[i];
