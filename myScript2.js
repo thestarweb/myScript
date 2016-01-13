@@ -23,7 +23,7 @@ var myScript = {
 		return len?(caller?caller.toString():main):res;
 	},
 	include:function(src){
-		if(src.indexOf('//')) src=this.root+src;
+		if(src.indexOf('//')<0) src=this.root+src;
 		//document.write('<script src="'+this.root+src+'" ><\/script>');
 		var s=myScript.set_dom('script',document.body);
 		s.src=src;
@@ -38,7 +38,7 @@ var myScript = {
 		return s;
 	},
 	include_once:function(src){
-		if(src.indexOf('//')) src=this.root+src;
+		if(src.indexOf('//')<0) src=this.root+src;
 		var list=this.$get('script');
 		for(var i=0;i<list.length;i++){
 			if(list[i].src==src) return list[i];
@@ -54,9 +54,9 @@ var myScript = {
 		}
 		if(typeof(marked)!='function'){
 			var s=this.include_once('marked.js');
-			s.onload=function(){
+			s.addEventListener('load',function(){
 				fun(marked(mk));
-			}
+			});
 		}else{
 			fun(marked(mk));
 		}
@@ -80,9 +80,9 @@ var myScript = {
 		var s=myScript.include_once('myScript2_input.js');
 		//this={get:function(){alert('load_error')}};
 		var temp=this;
-		s.onload=function(){
+		s.addEventListener('load',function(){
 			myScript.copyTo(new myScript._input(id,width,height,ruler),temp);
-		}
+		});
 	},
 	html_to_ubb:function(html,array){
 		var info='此api（html_to_ubb）过旧，可能存在安全隐患及其他BUG，已被myScript脚本开发者移出，如果你是用户，请通知网站开发人员更新';
