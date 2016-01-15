@@ -61,10 +61,33 @@ var myScript = {
 			fun(marked(mk));
 		}
 	},
+	marked_html:function(dom){
+		if(this.marked_code_js) dom.innerHTML=this.marked_code_html(dom.innerHTML);
+		else this.include_once('code_html.js').addEventListener('load',function(){
+			dom.innerHTML=myScript.marked_code_html(dom.innerHTML);
+		});
+	},
+	marked_js:function(dom){
+		if(this.marked_code_js) dom.innerHTML=this.marked_code_js(dom.innerHTML);
+		else this.include_once('code_html.js').addEventListener('load',function(){
+			dom.innerHTML=myScript.marked_code_js(dom.innerHTML);
+		});
+	},
 	marked_dom:function(dom,ob,mk){
 		if(!mk) mk=dom.innerHTML;
 		this.marked(mk,function(res){
 			dom.innerHTML=res;
+			var codes=myScript.$get('code',dom);
+			for(var i in codes){
+				switch(codes[i].className){
+					case 'lang-html':
+						myScript.marked_html(codes[i].firstChild);
+						break;
+					case 'lang-javascript':
+						myScript.marked_js(codes[i].firstChild);
+						break;
+				}
+			}
 		},ob)
 	},
 	copyTo:function(from,to){//实现马甲对象
