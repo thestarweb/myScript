@@ -78,7 +78,7 @@ var myScript = {
 		this.marked(mk,function(res){
 			dom.innerHTML=res;
 			var codes=myScript.$get('code',dom);
-			for(var i in codes){
+			for(var i in codes){	
 				switch(codes[i].className){
 					case 'lang-html':
 						myScript.marked_html(codes[i].firstChild);
@@ -332,6 +332,7 @@ var myScript = {
 				case 'windows nt 6.3':
 					return 'windows8.1';
 				case 'windows nt 6.4':
+				case 'windows nt 10.0':
 					return 'windows10';
 				default:
 					return new_str[0];
@@ -349,6 +350,7 @@ var myScript = {
 	},
 	get_browser:function(str){
 		if(!str) str=navigator.userAgent;
+		if(str.indexOf('Edge')>0) return 'Edge';
 		new_str=/MSIE (\d+.\d+)/gi.exec(str);
 		if(new_str) return 'IE'+new_str[1];
 		new_str=/Firefox\/(\d+.\d+)/gi.exec(str);
