@@ -27,17 +27,39 @@ myScript.marked_code_css=function(string,b){
 	return b?{s:'',r:res}:res;
 }
 myScript.marked_code_js=function(string,b){
-	var cap,res="";
+	var cap,res="",color="";
 	while(string.length>0){
+		//空格与换行
 		cap=/^([\n\r\t ]|<li>|<\/li>)*/.exec(string);
 		if(cap){
 			res+=cap[0];
 			string=string.substr(cap[0].length);
 		}
+		//script结束标签
 		if(b&&string.indexOf('&lt;/script&gt;')==0){
 			return {s:string,r:res};
 		}
-		cap=/^(?:(?:var|new|function|document|window|this|\d+|0x[\da-f]+)(?=\W)|(\/\/.*?)(<\/li>)|\+|-|\*|\/|=|("|').*?[^\\]\3|("|')\3)/i.exec(string);
+		
+		if(cap=/^(\/\/.*?)(?:<\/li>)/.exec(string)){//注释
+			color="green";
+		}else if(cap=/^((\+|-|\*|\/|=)|(while|if|else|do)(?=\W))/.exec(string)){//语法
+			color="orange";
+		}else if(cap=/^(var|function)(?=\W)/.exec(string)){//keyword
+			color="#282";
+		}else if(cap=/^(window|document)(?=\W)/.exec(string)){//objs
+			color="#80A";
+		}else if(cap=/^(this|\d+|0(x|X)[\da-fA-F]+)(?=\W)/.exec(string)){//this number
+			color="#00F";
+		}
+		if(color){
+			res+='<span style="color:'+color+';">'+cap[0]+'</span>';
+			string=string.substr(cap[0].length);
+			color="";
+		}else if(cap=/^([\$_a-z][_a-z0-9]*|.)/.exec(string)){
+			res+=cap[0];
+			string=string.substr(cap[0].length);
+		}
+		/*cap=/^(?:(?:var|new|function|document|window|this|\d+|0x[\da-f]+)(?=\W)|(\/\/.*?)(<\/li>)|\+|-|\*|\/|=|("|').*?[^\\]\3|("|')\3)/i.exec(string);
 		if(cap){
 			if(cap[2]){
 				res+='<span style="color:green;">'+cap[1]+'</span></li>';
@@ -78,7 +100,7 @@ myScript.marked_code_js=function(string,b){
 				res+=string[0];
 				string=string.substr(1);
 			}
-		}
+		}*/
 	}
 	return b?{s:'',r:res}:res;
 }
