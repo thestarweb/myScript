@@ -53,12 +53,16 @@ myScript.marked_code_js=function(string,b){
 		}
 		if(color){
 			res+='<span style="color:'+color+';">'+cap[0]+'</span>';
-			string=string.substr(cap[0].length);
+			//string=string.substr(cap[0].length);
 			color="";
+		}else if(cap=/^new \w+(\.\w+)*(?=\()/.exec(string)){
+			res+='<span style="color:#555;">'+cap[0]+'</span>';
 		}else if(cap=/^([\$_a-z][_a-z0-9]*|.)/.exec(string)){
 			res+=cap[0];
-			string=string.substr(cap[0].length);
+		}else{
+			continue;
 		}
+		string=string.substr(cap[0].length);
 		/*cap=/^(?:(?:var|new|function|document|window|this|\d+|0x[\da-f]+)(?=\W)|(\/\/.*?)(<\/li>)|\+|-|\*|\/|=|("|').*?[^\\]\3|("|')\3)/i.exec(string);
 		if(cap){
 			if(cap[2]){
