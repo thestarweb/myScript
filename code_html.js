@@ -55,9 +55,20 @@ myScript.marked_code_js=function(string,b){
 			res+='<span style="color:'+color+';">'+cap[0]+'</span>';
 			//string=string.substr(cap[0].length);
 			color="";
-		}else if(cap=/^new \w+(\.\w+)*(?=\()/.exec(string)){
-			res+='<span style="color:#555;">'+cap[0]+'</span>';
-		}else if(cap=/^([\$_a-z][_a-z0-9]*|.)/.exec(string)){
+		}else if(cap=/^new (\w+(\.\w+)*)(?=\()/.exec(string)){
+			/*if(cap[2]){
+				cap[1]=cap[0].split(' ')[1];
+				cap[1]=cap[1].substr(0,cap[1].lastIndexOf('.')+1);
+				cap[2]=cap[2].substr(1);
+			}else{
+				cap[2]=cap[1];
+				cap[1]="";
+			}*/
+			var list=cap[0].split(' ')[1].split('.');
+			res+='<span style="color:#282;">new</span> ';
+			for(var i=0;i<list.length-1;i++) res+='<span style="color:#555;">'+list[i]+'</span>.';
+			res+='<span style="color:#229;">'+list.pop()+'</span>';
+		}else if(cap=/^([\$_\w][_\w0-9]*|.)/.exec(string)){
 			res+=cap[0];
 		}else{
 			continue;
