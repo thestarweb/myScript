@@ -366,6 +366,8 @@ var myScript = {
 function $(s) {
 	if (typeof (s) == 'string') {
 		return myScript.$get(s);
+	}else if(typeof (s) == 'function'){
+		window.addEventListener('load',s);
 	}
 };
 $.input=function(id,w,h){
