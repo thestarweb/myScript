@@ -1,3 +1,11 @@
+//document.write('<link rel="stylesheet" type="text/css" href="'+myScript.root+'mk/mk.css" ><\/link>');
+(function(){
+	var s=myScript.set_dom('link',document.body);
+		s.rel="stylesheet";
+		s.type="text/css";
+		s.href=myScript.root+"mk/mk.css";
+})();
+
 /**
  * marked - a markdown parser
  * Copyright (c) 2011-2013, Christopher Jeffrey. (MIT Licensed)

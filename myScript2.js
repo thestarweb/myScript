@@ -75,10 +75,11 @@ var myScript = {
 	},
 	marked_dom:function(dom,ob,mk){
 		if(!mk) mk=dom.innerHTML;
+		dom.className+=" mk";
 		this.marked(mk,function(res){
 			dom.innerHTML=res;
 			var codes=myScript.$get('code',dom);
-			for(var i in codes){	
+			for(var i in codes){
 				switch(codes[i].className){
 					case 'lang-html':
 						myScript.marked_html(codes[i].firstChild);
