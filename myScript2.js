@@ -182,7 +182,7 @@ var myScript = {
 								obj.callback(obj.ajax);
 							}
 						} else {
-							alert('ajax故障' + "\n" + '未收到服务器数据');
+							console.log('ajax故障' + "\n" +  obj.ajax.status + '未收到服务器数据');
 						}
 					}
 				}
