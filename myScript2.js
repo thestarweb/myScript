@@ -108,26 +108,6 @@ var myScript = {
 			myScript.copyTo(new myScript._input(id,width,height,ruler),temp);
 		});
 	},
-	html_to_ubb:function(html,array){
-		var info='此api（html_to_ubb）过旧，可能存在安全隐患及其他BUG，已被myScript脚本开发者移出，如果你是用户，请通知网站开发人员更新';
-		this.show(info,290,150)
-		console.log(info+'\n'+'调用位置：'+this.getCaller(1));
-	},
-	ubb_to_html:function(ubb,array){
-		var info='此api（ubb_to_html）过旧，可能存在安全隐患及其他BUG，已被myScript脚本开发者移出，如果你是用户，请通知网站开发人员更新';
-		this.show(info,290,150)
-		console.log(info+'\n'+'调用位置：'+this.getCaller(1));
-	},
-	html_sh:function(html,ruler){
-		var info='此api（html_sh）过旧，可能存在安全隐患及其他BUG，已被myScript脚本开发者移出，如果你是用户，请通知网站开发人员更新';
-		this.show(info,290,150)
-		console.log(info+'\n'+'调用位置：'+this.getCaller(1));
-	},
-	sh_html:function(sh,ruler){
-		var info='此api（sh_html）过旧，可能存在安全隐患及其他BUG，已被myScript脚本开发者移出，如果你是用户，请通知网站开发人员更新';
-		this.show(info,290,150)
-		console.log(info+'\n'+'调用位置：'+this.getCaller(1));
-	},
 
 	in_array: function(str,arr){
 		for(i=0;i<arr.length;i++){   
@@ -311,6 +291,42 @@ var myScript = {
 		body.style.height=(h-25)+'px';
 		return win;
 	},
+	message:(function(){
+		var mlist=[],r=0,dom=null;
+		var remove=function(){
+			myScript.remove_dom(dom);dom=null
+			next();
+		}
+		var move=function(){
+			r-=10
+			if(r){
+				dom.style.right=-r+'px';
+				setTimeout(move,20);
+			}else{
+				setTimeout(remove,5000)
+			}
+		}
+		var next=function(){
+			var now=mlist.shift(); if(!now) return;
+			dom=myScript.set_dom('div',myScript.$get('body')[0]);
+			dom.innerHTML='<div style="font-size:18px;">'+now[0]+'</div>'+now[1];
+			dom.style.background=now[2];
+			dom.style.width='290px';
+			dom.style.height='50px';
+			dom.style.fontSize='12px';
+			dom.style.lineHeight='20px';
+			dom.style.right='-290px';
+			dom.style.bottom='50px';
+			dom.style.position='fixed';
+			r=290;
+			move();
+		}
+		return function(title,html,color){
+			if(!color) color='#08F';
+			mlist.push([title,html,color]);
+			if(!dom) next();
+		}
+	})(),
 	get_os:function(str){
 		if(!str) str=navigator.userAgent;
 		if(/Xbox One/gi.exec(str)) return 'Xbox One(windows8)';
