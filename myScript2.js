@@ -292,39 +292,56 @@ var myScript = {
 		return win;
 	},
 	message:(function(){
-		var mlist=[],r=0,dom=null;
-		var remove=function(){
-			myScript.remove_dom(dom);dom=null
-			next();
+		var mlist=[],r=0,timeout=null;
+		var remove=function(){	
+			myScript.remove_dom(mlist.shift()[4]);
 		}
-		var move=function(){
-			r-=10
-			if(r){
-				dom.style.right=-r+'px';
-				setTimeout(move,20);
-			}else{
-				setTimeout(remove,5000)
+		var moveup=function(endi,h){
+			for(var i=0;i<endi;i++){
+				mlist[i][5]+=h;
+				mlist[i][4].style.bottom=(50+mlist[i][5])+'px';
 			}
 		}
-		var next=function(){
-			var now=mlist.shift(); if(!now) return;
-			dom=myScript.set_dom('div',myScript.$get('body')[0]);
+		var move=function(){
+			for(var i in mlist){
+				mlist[i][3]+=10
+				if(mlist[i][3]<10){
+					mlist[i][4].style.right=mlist[i][3]+'px';
+				}else if(mlist[i][3]<50){
+					moveup(i,10);
+					mlist[i][4].style.right='5px';
+					mlist[i][4].style.height=mlist[i][3]+'px';
+				}else if(mlist[i][3]>2500){
+					remove();
+				}
+			}
+			timeout=setTimeout(move,20);
+		}
+		var next=function(now){
+			moveup(mlist.length,5);
+			var dom=myScript.set_dom('div',myScript.$get('body')[0]);
 			dom.innerHTML='<div style="font-size:18px;">'+now[0]+'</div>'+now[1];
 			dom.style.background=now[2];
 			dom.style.width='290px';
-			dom.style.height='50px';
+			dom.style.height='0px';
 			dom.style.fontSize='12px';
 			dom.style.lineHeight='20px';
 			dom.style.right='-290px';
 			dom.style.bottom='50px';
+			dom.style.color='#FFF';
+			dom.style.overflow='hidden';
+			dom.style.border='2px solid #000';
 			dom.style.position='fixed';
-			r=290;
-			move();
+			now.push(-290);
+			now.push(dom);
+			now.push(0);
+			mlist.push(now);
+			if(!timeout) move();
 		}
 		return function(title,html,color){
 			if(!color) color='#08F';
-			mlist.push([title,html,color]);
-			if(!dom) next();
+			mlist.push();
+			next([title,html,color]);
 		}
 	})(),
 	get_os:function(str){
