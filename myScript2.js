@@ -96,16 +96,16 @@ var myScript = {
 			to[i]=from[i];
 		}
 	},
-	input:function(id,width,height,ruler){
+	input:function(id,width,height,ruler,body){
 		if(myScript._input){
-			myScript.copyTo(new myScript._input(id,width,height,ruler),this);
+			myScript.copyTo(new myScript._input(id,width,height,ruler,body),this);
 			return;
 		}
 		var s=myScript.include_once('myScript2_input.js');
 		//this={get:function(){alert('load_error')}};
 		var temp=this;
 		s.addEventListener('load',function(){
-			myScript.copyTo(new myScript._input(id,width,height,ruler),temp);
+			myScript.copyTo(new myScript._input(id,width,height,ruler,body),temp);
 		});
 	},
 

@@ -1,4 +1,4 @@
-myScript._input=function (id,width,height,ob) {
+myScript._input=function (id,width,height,ob,dbody) {
 	//外部div初始化
 	if (!width || width < 200) {
 		width =400;
@@ -11,7 +11,7 @@ myScript._input=function (id,width,height,ob) {
 	this.root.style.width = width + 'px';
 	this.root.style.border = '1px solid #000';
 
-	//标题栏
+	//工具栏
 	this.menu = document.createElement('div');
 	this.menu.style.height = '20px';
 	//this.menu.style.position = 'relative';
@@ -31,6 +31,7 @@ myScript._input=function (id,width,height,ob) {
 	this.input.contentEditable = 'true';//设置可写属性
 	this.input.style.overflow = 'auto';//如果文字过多自动显示滚动条
 	this.input.style.float='left';
+	if(dbody) this.input.innerHTML=dbody;
 	this.root.appendChild(this.input);
 
 	//预览框的创建
