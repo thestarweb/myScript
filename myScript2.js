@@ -396,14 +396,23 @@ var myScript = {
 		return '未知浏览器';
 	}
 };
-
-function $(s) {
+(function(){
+	var isload=false;
+	window.addEventListener('load',function(){
+		isload=true;
+	});
+ $=function(s) {
 	if (typeof (s) == 'string') {
 		return myScript.$get(s);
 	}else if(typeof (s) == 'function'){
-		window.addEventListener('load',s);
+		if(isload){
+			s();
+		}else{
+			window.addEventListener('load',s);
+		}
 	}
 };
+})();
 $.input=function(id,w,h){
 	return new myScript.input(id,w,h);
 };
