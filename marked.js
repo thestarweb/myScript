@@ -394,7 +394,7 @@
 		if(cap[0][0]=='['){
 			return'<a href="'+escape(link.href)+'"'+(link.title?' title="'+escape(link.title)+'"':'')+' target="_blank">'+this.output(cap[1])+'</a>';
 		}else if(cap[0][0]=="!"){
-			return'<img src="'+escape(link.href)+'" alt="'+escape(cap[1])+'"'+(cap[4]?' style="'+(cap[4]=='w'?'width':'height')+':'+cap[5]+(cap[6]?'%;':'px;')+(cap[7]?(cap[7]=='w'?'width':'height')+':'+cap[8]+(cap[9]?'%;':'px;'):'')+'"':'')+(link.title?' title="'+escape(link.title)+'"':'')+'>';
+			return'<img src="'+escape(link.href)+'" alt="'+escape(cap[1])+'" style="'+(cap[4]?(cap[4]=='w'?'width':'height')+':'+cap[5]+(cap[6]?'%;':'px;')+(cap[7]?(cap[7]=='w'?'width':'height')+':'+cap[8]+(cap[9]?'%;':'px;'):cap[6]==''):'max-width=100%;')+'"'+(link.title?' title="'+escape(link.title)+'"':'')+'>';
 		}else{
 			return'<span style="color:'+escape(link.href)+';">'+escape(cap[1])+'</span>';
 		}

@@ -76,7 +76,7 @@ var myScript = {
 	marked_dom:function(dom,ob,mk){
 		if(!mk) mk=dom.innerHTML;
 		dom.className+=" mk";
-		this.marked(mk,function(res){
+		this.marked(mk.replace('&lt;','<').replace('&gt;','>'),function(res){
 			dom.innerHTML=res;
 			var codes=myScript.$get('code',dom);
 			for(var i in codes){
