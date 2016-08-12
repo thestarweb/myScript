@@ -80,7 +80,7 @@ var myScript = {
 			dom.innerHTML=res;
 			var codes=myScript.$get('code',dom);
 			for(var i in codes){
-				switch(codes[i].className){
+					case 'lang-js':
 					case 'lang-html':
 						myScript.marked_html(codes[i].firstChild);
 						break;
