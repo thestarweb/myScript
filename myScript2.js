@@ -85,6 +85,7 @@ var myScript = {
 						myScript.marked_html(codes[i].firstChild);
 						break;
 					case 'lang-javascript':
+					case 'lang-js':
 						myScript.marked_js(codes[i].firstChild);
 						break;
 				}
