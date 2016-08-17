@@ -1,4 +1,4 @@
-//document.write('<link rel="stylesheet" type="text/css" href="'+myScript.root+'mk/mk.css" ><\/link>');
+document.write('<link rel="stylesheet" type="text/css" href="'+myScript.root+'mk/mk.css" ><\/link>');
 (function(){
 	var s=myScript.set_dom('link',document.body);
 		s.rel="stylesheet";
