@@ -1,3 +1,6 @@
+.mk img{
+	max-width: 100%;
+}
 .mk ul,.mk ol{
 	margin-left:50px;
 	background-color: rgba(0,0,0,0.2);
@@ -32,4 +35,23 @@
 }
 .mk blockquote{
 	margin:0 10%;
+	background-color:rgba(128,128,128,0.5);
+	overflow: hidden;
+	padding: 10	px;
+}
+.mk blockquote:before{
+	content:"『";
+	display: block;
+	margin-bottom: -15px;
+	margin-top:5px;
+	font-size: 20px;
+	color: #555;
+}
+.mk blockquote:after{
+	content:"』";
+	display: block;
+	margin-top: -15px;
+	font-size: 20px;
+	color: #555;
+	float: right;
 }
