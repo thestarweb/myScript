@@ -332,7 +332,7 @@ document.write('<link rel="stylesheet" type="text/css" href="'+myScript.root+'mk
 				out+=this.options.sanitize?escape(cap[0]):cap[0];
 				continue;
 			}
-			if((cap=this.rules.link.exec(src))&&(cap[0][0]=='!'||cap[0][0]=='$'||cap[0][0]=='[')){
+			if((cap=this.rules.link.exec(src))&&(cap[0][0]=='!'||cap[0][0]=='$'||cap[0][0]=='@'||cap[0][0]=='[')){
 				src=src.substring(cap[0].length);
 				out+=this.outputLink(cap,{href:cap[2],title:cap[3]});
 				continue;
@@ -395,8 +395,11 @@ document.write('<link rel="stylesheet" type="text/css" href="'+myScript.root+'mk
 			return'<a href="'+escape(link.href)+'"'+(link.title?' title="'+escape(link.title)+'"':'')+' target="_blank">'+this.output(cap[1])+'</a>';
 		}else if(cap[0][0]=="!"){
 			return'<img src="'+escape(link.href)+'" alt="'+escape(cap[1])+'" style="'+(cap[4]?(cap[4]=='w'?'width':'height')+':'+cap[5]+(cap[6]?'%;':'px;')+(cap[7]?(cap[7]=='w'?'width':'height')+':'+cap[8]+(cap[9]?'%;':'px;'):cap[6]==''):'max-width=100%;')+'"'+(link.title?' title="'+escape(link.title)+'"':'')+'>';
-		}else{
+		}else if(cap[0][0]=="$"){
 			return'<span style="color:'+escape(link.href)+';">'+escape(cap[1])+'</span>';
+		}else if(cap[0][0]=="@"){
+			if(cap[1]=="video") return '<video src="'+link.href+'" controls="controls" style="max-width:100%">您的浏览器不支持直接播放视频</video>';
+			return '';
 		}
 	};InlineLexer.prototype.mangle=function(text){
 		var out='',l=text.length,i=0,ch;
