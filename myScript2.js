@@ -79,7 +79,7 @@ var myScript = {
 		this.marked(mk.replace('&lt;','<').replace('&gt;','>'),function(res){
 			dom.innerHTML=res;
 			var codes=myScript.$get('code',dom);
-			for(var i in codes){
+			for(var i=0;i<codes.length;i++){
 				switch(codes[i].className.toLowerCase()){
 					case 'lang-html':
 						myScript.marked_html(codes[i].firstChild);
