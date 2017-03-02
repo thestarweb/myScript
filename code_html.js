@@ -47,7 +47,7 @@ myScript.marked_code_js=function(string,b){
 			return {s:string,r:res};
 		}
 		
-		if(cap=/^((\/\/.*?)(?:<\/li>)|\/\*.*\*\/?)/.exec(string)){//注释
+		if(cap=/^((\/\/.*?)(?:<\/li>)|\/\*.*?\*\/)/.exec(string)){//注释
 			type="zhushi";
 		}else if(cap=/^((\+|-|\*|\/|=)|(while|if|else|do)(?=\W))/.exec(string)){//语法
 			type="main";
