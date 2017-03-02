@@ -14,10 +14,11 @@
 	list-style-type:decimal;
 }
 .mk pre{
-	background-color: rgba(0,0,0,0.2);
+	background-color: rgba(0,0,0,0.8);
 	padding-left:20px;
 	overflow: auto;
 	line-height: 12px;
+	color: #FFF;
 }
 .mk pre ol{
 	margin: 0;
@@ -31,7 +32,7 @@
 	border-left: 2px inset #0F0;
 }
 .mk pre li:nth-child(odd){
-	background-color: rgba(0,0,0,0.2);
+	background-color: rgba(0,0,0,0.8);
 }
 .mk blockquote{
 	margin:0 10%;

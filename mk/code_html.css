@@ -1,0 +1,24 @@
+.mk pre .js_zhushi{
+	color: #BBB;
+}
+.mk pre .js_main{
+	color: orange;
+}
+.mk pre .js_keywords{
+	color: #282;
+}
+.mk pre .js_obj{
+	color: #80A;
+}
+.mk pre .js_number{
+	color: #00F;
+}
+.mk pre .js_new{
+	color: orange;
+}
+.mk pre .js_obj_head{
+	color: #DDD;
+}
+.mk pre .js_obj_last{
+	color: yellow;
+}

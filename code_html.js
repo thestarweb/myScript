@@ -1,3 +1,10 @@
+//document.write('<link rel="stylesheet" type="text/css" href="'+myScript.root+'mk/code_html.css" ><\/link>');
+(function(){
+	var d=$.set('link',$('head')[0]);
+	d.type="text/css";
+	d.rel="stylesheet";
+	d.href=myScript.root+"mk/code_html.css";
+})();
 myScript.marked_code_css=function(string,b){
 	var cap,ins=false,res="";
 	while(string.length>0){
@@ -41,81 +48,31 @@ myScript.marked_code_js=function(string,b){
 		}
 		
 		if(cap=/^((\/\/.*?)(?:<\/li>)|\/\*.*\*\/?)/.exec(string)){//注释
-			color="green";
+			type="zhushi";
 		}else if(cap=/^((\+|-|\*|\/|=)|(while|if|else|do)(?=\W))/.exec(string)){//语法
-			color="orange";
+			type="main";
 		}else if(cap=/^(var|function)(?=\W)/.exec(string)){//keyword
-			color="#282";
+			type="keywords";
 		}else if(cap=/^(window|document)(?=\W)/.exec(string)){//objs
-			color="#80A";
+			type="obj";
 		}else if(cap=/^(this|\d+|0(x|X)[\da-fA-F]+)(?=\W)/.exec(string)){//this number
-			color="#00F";
+			type="number";
 		}
-		if(color){
-			res+='<span style="color:'+color+';">'+cap[0].replace(/<\/li><li>/g,'</span></li><li><span style="color:'+color+';">')+'</span>';
-			//string=string.substr(cap[0].length);
-			color="";
-		}else if(cap=/^new (\w+(\.\w+)*)(?=\()/.exec(string)){
-			/*if(cap[2]){
-				cap[1]=cap[0].split(' ')[1];
-				cap[1]=cap[1].substr(0,cap[1].lastIndexOf('.')+1);
-				cap[2]=cap[2].substr(1);
-			}else{
-				cap[2]=cap[1];
-				cap[1]="";
-			}*/
-			var list=cap[0].split(' ')[1].split('.');
-			res+='<span style="color:#282;">new</span> ';
-			for(var i=0;i<list.length-1;i++) res+='<span style="color:#555;">'+list[i]+'</span>.';
-			res+='<span style="color:#229;">'+list.pop()+'</span>';
+		if(type){
+			res+='<span class="js_'+type+'">'+cap[0].replace(/<\/li><li>/g,'</span></li><li><span class="js_'+type+'">')+'</span>';
+			type="";
+		}else if(cap=/^(new )?(\w+(\.\w+)*)(?=\()/.exec(string)){
+			console.log(cap);
+			var list=cap[2].split('.');
+			if(cap[1]=='new ')res+='<span class="js_new">new</span> ';
+			for(var i=0;i<list.length-1;i++) res+='<span class="js_obj_head">'+list[i]+'</span>.';
+			res+='<span class="js_obj_last">'+list.pop()+'</span>';
 		}else if(cap=/^([\$_\w][_\w0-9]*|.)/.exec(string)){
 			res+=cap[0];
 		}else{
 			continue;
 		}
 		string=string.substr(cap[0].length);
-		/*cap=/^(?:(?:var|new|function|document|window|this|\d+|0x[\da-f]+)(?=\W)|(\/\/.*?)(<\/li>)|\+|-|\*|\/|=|("|').*?[^\\]\3|("|')\3)/i.exec(string);
-		if(cap){
-			if(cap[2]){
-				res+='<span style="color:green;">'+cap[1]+'</span></li>';
-			}else if(cap[3]){
-				res+='<span style="color:green;">'+cap[0]+'</span>';
-			}else{
-				res+='<span style="color:';
-				switch(cap[0]){
-					case 'var':
-						res+='#8A0';	
-						break;
-					case 'function':
-						res+='#0A0';
-						break;
-					case 'new':
-						res+='#A80';
-						break;
-					case 'document':
-						res+='#80A';
-						break;
-					case '+':
-					case '-':
-					case '*':
-					case '/':
-					case '=':
-						res+='orange';
-						break;
-					default:
-						res+='#00F';
-				}
-				res+=';">'+cap[0]+'</span>';
-			}
-			string=string.substr(cap[0].length);
-		}else if(b&&string.indexOf('&lt;/script&gt;')==0){
-			return {s:string,r:res};
-		}else{
-			if(string){
-				res+=string[0];
-				string=string.substr(1);
-			}
-		}*/
 	}
 	return b?{s:'',r:res}:res;
 }
