@@ -52,7 +52,7 @@ myScript.marked_code_js=function(string,b){
 			color="#00F";
 		}
 		if(color){
-			res+='<span style="color:'+color+';">'+cap[0]+'</span>';
+			res+='<span style="color:'+color+';">'+cap[0].replace(/<\/li><li>/g,'</span></li><li><span style="color:'+color+';">')+'</span>';
 			//string=string.substr(cap[0].length);
 			color="";
 		}else if(cap=/^new (\w+(\.\w+)*)(?=\()/.exec(string)){
