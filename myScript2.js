@@ -323,12 +323,18 @@ var myScript = {
 			var dom=myScript.set_dom('div',myScript.$get('body')[0]);
 			dom.innerHTML='<div style="font-size:18px;">'+now[0]+'</div>'+now[1];
 			dom.style.background=now[2];
-			dom.style.width='290px';
-			dom.style.height='0px';
 			dom.style.fontSize='12px';
 			dom.style.lineHeight='20px';
+			dom.style.height='0px';
+			if(navigator.userAgent.indexOf('moblie')&&document.body.offsetWidth<400){
+				dom.style.width='95%';
+				dom.style.right='-290px';
+				dom.style.top='1px';
+			}else{
+			dom.style.width='290px';
 			dom.style.right='-290px';
 			dom.style.bottom='50px';
+			}
 			dom.style.color='#FFF';
 			dom.style.overflow='hidden';
 			dom.style.border='2px solid #000';
