@@ -116,6 +116,16 @@ var myScript = {
 		}
 		return false; 
 	},
+	remove_from_array: function(arr,value){
+
+		for(var i=0; i<arr.length;i++){
+			if(arr[i]==value){
+				delete(arr[i]);
+				return true;
+			}
+		}
+		return false;
+	},
 
 	getajax: function () {
 		if (window.ActiveXObject) {
