@@ -411,7 +411,45 @@ var myScript = {
 		var new_str=/rv:(\d+.\d+)/gi.exec(str);
 		if(new_str) return 'IE'+new_str[1];
 		return '未知浏览器';
-	}
+	},
+
+	//基于在前端的模板返回HTML
+	template_list:{},
+	template_init:function(){
+		var templatess=myScript.$get("templates");
+		for(var i=0;i<templatess.length;i++){
+			var templates=myScript.$get("template",templatess[i]);
+			for(var j=0;j<templates.length;j++){
+				var template=templates[j];
+				this.template_list[template.getAttribute("name")]=template.innerHTML;
+			}
+			myScript.remove_dom(templatess[i])
+		}
+	},
+	template_get_html:function(name,obj){
+		//var dom=myScript.$get("#__"+name+"__");
+		if(!this.template_list[name]){
+			console.log("cannot fount template "+name);
+			return;
+		}
+		var html=this.template_list[name];
+		for(var i in obj){
+			html=html.replace("{"+i+"}",obj[i]);
+		}
+		html=html.replace(/@__([a-z0-9]+)__(#[a-z0-9]+=[a-z0-9]+)*/gi,(a,b)=>{
+			if(b==name){
+				console.log("cannot use self in "+name);
+				return "";
+			}
+			var data_s=a.split("#"),data={};
+			for(var i=1;i<data_s.length;i++){
+				var temp=data_s[i].split("=");
+				data[temp[0]]=temp[1];
+			}
+			return this.template_get_html(b,data);
+		})
+		return html;
+	},
 };
 (function(){
 	var isload=false;
