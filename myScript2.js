@@ -192,7 +192,7 @@ var myScript = {
 		data&&ajax.setCont(data);
 		ajax.send();
 	},
-	//names 选择器,p父节点,flag强制增加set方法等
+	//names 选择器,p父节点,flag标记递归调用
 	$get:function(names,p,flag){
 		p=p||document;//从哪个节点取
 
@@ -200,7 +200,7 @@ var myScript = {
 		if(names.indexOf(",")>0){
 			var res=[],list=names.split(",");
 			for(var i=0;i<list.length;i++){
-				var c=this.$get(list[i],p);
+				var c=this.$get(list[i],p,true);
 				if(c){
 					if(list[i].indexOf(" ")==-1&&list[i][0]=="#"){
 						res[res.length]=c;
@@ -210,35 +210,36 @@ var myScript = {
 				}
 			}
 			return res;
-		}
-		var index,dom;
-		if((index=names.indexOf(' '))>0){//是否有子选择器
-			name=names.substr(0,index);
 		}else{
-			name=names;
-		}
-		if (name[0] == '#') {
-			dom= p.getElementById(name.substr(1));
-			if(names.length==name.length){
-				return dom;
+			var index,dom;
+			if((index=names.indexOf(' '))>0){//是否有子选择器
+				name=names.substr(0,index);
 			}else{
-				dom=[dom];
+				name=names;
 			}
-		} else if (name[0] == '.') {
-			dom=p.getElementsByClassName(name.substr(1));
-		} else if (name[0] == '@') {
-			dom=p.getElementsByName(name.substr(1));
-		} else {
-			dom=p.getElementsByTagName(name);
-		}
-		if(names.length!=name.length){
-			var res=[];
-			for(var i=0;i<dom.length;i++){
-				res=res.concat(Array.prototype.slice.call(this.$get(names.substr(index+1),dom[i]),0));//把子节点组转换成数组合并进数组
+			if (name[0] == '#') {
+				dom= p.getElementById(name.substr(1));
+				if(names.length==name.length){
+					return dom;
+				}else{
+					dom=[dom];
+				}
+			} else if (name[0] == '.') {
+				dom=p.getElementsByClassName(name.substr(1));
+			} else if (name[0] == '@') {
+				dom=p.getElementsByName(name.substr(1));
+			} else {
+				dom=p.getElementsByTagName(name);
 			}
-			dom=res;
+			if(names.length!=name.length){
+				var res=[];
+				for(var i=0;i<dom.length;i++){
+					res=res.concat(Array.prototype.slice.call(this.$get(names.substr(index+1),dom[i],true),0));//把子节点组转换成数组合并进数组
+				}
+				dom=res;
+			}
 		}
-		if(document==p||flag){//递归调用最外层
+		if(!flag){//递归调用最外层
 			dom.set=function (name,value,nu){
 				for(var i=0;this[i];i++){
 					if(!nu){
