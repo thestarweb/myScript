@@ -192,8 +192,25 @@ var myScript = {
 		data&&ajax.setCont(data);
 		ajax.send();
 	},
-	$get:function(names,p){
+	//names 选择器,p父节点,flag强制增加set方法等
+	$get:function(names,p,flag){
 		p=p||document;//从哪个节点取
+
+		//有多重选择器
+		if(names.indexOf(",")>0){
+			var res=[],list=names.split(",");
+			for(var i=0;i<list.length;i++){
+				var c=this.$get(list[i],p);
+				if(c){
+					if(list[i].indexOf(" ")==-1&&list[i][0]=="#"){
+						res[res.length]=c;
+					}else{
+						res=res.concat(Array.prototype.slice.call(c,0));//把子节点组转换成数组合并进数组
+					}
+				}
+			}
+			return res;
+		}
 		var index,dom;
 		if((index=names.indexOf(' '))>0){//是否有子选择器
 			name=names.substr(0,index);
@@ -221,7 +238,7 @@ var myScript = {
 			}
 			dom=res;
 		}
-		if(document==p){//递归调用最外层
+		if(document==p||flag){//递归调用最外层
 			dom.set=function (name,value,nu){
 				for(var i=0;this[i];i++){
 					if(!nu){
@@ -436,7 +453,8 @@ var myScript = {
 		for(var i in obj){
 			html=html.replace("{"+i+"}",obj[i]);
 		}
-		html=html.replace(/@__([a-z0-9]+)__(#[a-z0-9]+=[a-z0-9]+)*/gi,(a,b)=>{
+		var self=this;
+		html=html.replace(/@__([a-z0-9]+)__(#[a-z0-9]+=[a-z0-9]+)*/gi,function(a,b){
 			if(b==name){
 				console.log("cannot use self in "+name);
 				return "";
@@ -446,7 +464,7 @@ var myScript = {
 				var temp=data_s[i].split("=");
 				data[temp[0]]=temp[1];
 			}
-			return this.template_get_html(b,data);
+			return self.template_get_html(b,data);
 		})
 		return html;
 	},
