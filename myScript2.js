@@ -441,7 +441,7 @@ var myScript = {
 				var template=templates[j];
 				this.template_list[template.getAttribute("name")]=template.innerHTML;
 			}
-			myScript.remove_dom(templatess[i])
+			myScript.remove_dom(templatess[i]);
 		}
 	},
 	template_get_html:function(name,obj){
@@ -452,10 +452,10 @@ var myScript = {
 		}
 		var html=this.template_list[name];
 		for(var i in obj){
-			html=html.replace("{"+i+"}",obj[i]);
+			html=html.replace(new RegExp("\{"+i+"\}","g"),obj[i]);
 		}
 		var self=this;
-		html=html.replace(/@__([a-z0-9]+)__(#[a-z0-9]+=[a-z0-9]+)*/gi,function(a,b){
+		html=html.replace(/@__([a-z0-9_]+)__(#[a-z0-9_]+=[a-z0-9]+)*/gi,function(a,b){
 			if(b==name){
 				console.log("cannot use self in "+name);
 				return "";
@@ -466,7 +466,7 @@ var myScript = {
 				data[temp[0]]=temp[1];
 			}
 			return self.template_get_html(b,data);
-		})
+		});
 		return html;
 	},
 };
