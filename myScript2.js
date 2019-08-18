@@ -149,7 +149,7 @@ var myScript = {
 				this.data = null;
 			}
 			if (!this.type) {
-				this.type = 'POST';
+				this.type = this.data?'POST':"GET";
 			}
 			this.ajax.open(this.type, this.page,this.keep?false:true);
 			//定义http头
@@ -209,7 +209,7 @@ var myScript = {
 					}
 				}
 			}
-			return res;
+			dom=res;
 		}else{
 			var index,dom;
 			if((index=names.indexOf(' '))>0){//是否有子选择器
