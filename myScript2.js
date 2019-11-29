@@ -181,7 +181,11 @@ var myScript = {
 							if (obj.callback) {
 								obj.ajax.text = obj.ajax.responseText;
 								try{
-									obj.ajax.json=eval('('+decodeURI(obj.ajax.text)+')');
+									if(JSON&&JSON.parse){
+										obj.ajax.json=JSON.parse(obj.ajax.text)
+									}else{
+										obj.ajax.json=eval('('+decodeURI(obj.ajax.text)+')');
+									}
 								}catch(e){
 									obj.ajax.json=false;
 								}
