@@ -92,6 +92,21 @@ var myScript = {
 			}
 		},ob)
 	},
+	marked_langs:function(dom,langPrefix){
+		if(!langPrefix) langPrefix=''
+		var codes=myScript.$get('code',dom);
+		for(var i=0;i<codes.length;i++){
+			switch(codes[i].className.toLowerCase()){
+				case langPrefix+'html':
+					myScript.marked_html(codes[i].firstChild);
+					break;
+				case langPrefix+'javascript':
+				case langPrefix+'js':
+					myScript.marked_js(codes[i].firstChild);
+					break;
+			}
+		}
+	},
 	copyTo:function(from,to){//实现马甲对象
 		for(var i in from){
 			to[i]=from[i];
