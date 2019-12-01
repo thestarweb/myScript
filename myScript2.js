@@ -187,8 +187,6 @@ var myScript = {
 										obj.ajax.json=eval('('+decodeURI(obj.ajax.text)+')');
 									}
 								}catch(e){
-									debugger
-									console.log(obj.ajax.text,myScript.strip_json_comments(obj.ajax.text))
 									obj.ajax.json=false;
 								}
 								obj.callback(obj.ajax);
@@ -214,17 +212,10 @@ var myScript = {
 		ajax.send();
 	},
 	strip_json_comments:function(data){
-		var line=0;c=0;
 		var flag="";
 		var l_flag="";
 		var res="";
 		for(var i=0;i<data.length;i++){
-			c++;
-			if(data[i]=="\n"){
-				c=-1;
-				line++;
-			}
-			if(data[i]=="/")console.log(flag);
 			if(flag=="/"){
 				if(data[i]=="\n"){
 					flag="";
@@ -254,10 +245,8 @@ var myScript = {
 						res+="/"
 					}
 					if(data[i]==flag){
-						console.log("end",data.substr(i,5),line,c)
 						flag="";
 					}else if((data[i]=="\""||data[i]=="'")&&flag==""){
-						console.log("start",data.substr(i,5),line,c)
 						flag=data[i];
 					}
 					l_flag="";

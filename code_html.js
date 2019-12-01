@@ -62,7 +62,7 @@ myScript.marked_code_js=function(string,b){
 			res+='<span class="js_'+type+'">'+cap[0].replace(/<\/li><li>/g,'</span></li><li><span class="js_'+type+'">')+'</span>';
 			type="";
 		}else if(cap=/^(new )?(\w+(\.\w+)*)(?=\()/.exec(string)){
-			console.log(cap);
+			//console.log(cap);
 			var list=cap[2].split('.');
 			if(cap[1]=='new ')res+='<span class="js_new">new</span> ';
 			for(var i=0;i<list.length-1;i++) res+='<span class="js_obj_head">'+list[i]+'</span>.';
