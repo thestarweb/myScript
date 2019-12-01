@@ -182,11 +182,13 @@ var myScript = {
 								obj.ajax.text = obj.ajax.responseText;
 								try{
 									if(JSON&&JSON.parse){
-										obj.ajax.json=JSON.parse(obj.ajax.text)
+										obj.ajax.json=JSON.parse(myScript.strip_json_comments(obj.ajax.text));
 									}else{
 										obj.ajax.json=eval('('+decodeURI(obj.ajax.text)+')');
 									}
 								}catch(e){
+									debugger
+									console.log(obj.ajax.text,myScript.strip_json_comments(obj.ajax.text))
 									obj.ajax.json=false;
 								}
 								obj.callback(obj.ajax);
@@ -210,6 +212,71 @@ var myScript = {
 		if(back)ajax.callback=back;
 		data&&ajax.setCont(data);
 		ajax.send();
+	},
+	strip_json_comments:function(data){
+		var line=0;c=0;
+		var flag="";
+		var l_flag="";
+		var res="";
+		for(var i=0;i<data.length;i++){
+			c++;
+			if(data[i]=="\n"){
+				c=-1;
+				line++;
+			}
+			if(data[i]=="/")console.log(flag);
+			if(flag=="/"){
+				if(data[i]=="\n"){
+					flag="";
+				}
+			}else if(flag=="*"){
+				if(l_flag=="*"&&data[i]=="/"){
+					flag="";
+				}else{
+					l_flag=data[i];
+				}
+			}else{
+				//非注释
+				if(l_flag!="\\"){
+					if(l_flag=="/"){
+						if(data[i]=="/"){
+							//行注释开始
+							flag="/";
+							l_flag="";
+							continue;
+						}
+						if(data[i]=="*"){
+							//行注释开始
+							flag="*";
+							l_flag="";
+							continue;
+						}
+						res+="/"
+					}
+					if(data[i]==flag){
+						console.log("end",data.substr(i,5),line,c)
+						flag="";
+					}else if((data[i]=="\""||data[i]=="'")&&flag==""){
+						console.log("start",data.substr(i,5),line,c)
+						flag=data[i];
+					}
+					l_flag="";
+					if(flag==""){
+						if(data[i]=="/"){
+							l_flag="/"
+							continue;
+						}
+					}
+					if(data[i]=="\\"){
+						l_flag="\\";
+					}
+				}else{
+					l_flag="";
+				}
+				res+=data[i];
+			}
+		}
+		return res;
 	},
 	//names 选择器,p父节点,flag标记递归调用
 	$get:function(names,p,flag){
