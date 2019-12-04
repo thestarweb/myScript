@@ -160,15 +160,16 @@ var myScript = {
 			if (!this.page) {
 				return;
 			}
-			if (!this.data) {
-				this.data = null;
-			}
 			if (!this.type) {
 				this.type = this.data?'POST':"GET";
 			}
 			this.ajax.open(this.type, this.page,this.keep?false:true);
-			//定义http头
-			if(this.setHead){
+			if (!this.data) {
+				this.data = null;
+			}else if(typeof(this.data)!="string"){
+				this.data=JSON.stringify(this.data);
+				this.ajax.setRequestHeader("Content-Type","application/json");
+			}else{
 				this.ajax.setRequestHeader("content-type", "application/x-www-form-urlencoded");
 			};
 			//this.ajax.setRequestHeader('X_REQUESTED_WITH','ajax');
@@ -187,8 +188,6 @@ var myScript = {
 										obj.ajax.json=eval('('+decodeURI(obj.ajax.text)+')');
 									}
 								}catch(e){
-									debugger
-									console.log(obj.ajax.text,myScript.strip_json_comments(obj.ajax.text))
 									obj.ajax.json=false;
 								}
 								obj.callback(obj.ajax);
@@ -214,17 +213,10 @@ var myScript = {
 		ajax.send();
 	},
 	strip_json_comments:function(data){
-		var line=0;c=0;
 		var flag="";
 		var l_flag="";
 		var res="";
 		for(var i=0;i<data.length;i++){
-			c++;
-			if(data[i]=="\n"){
-				c=-1;
-				line++;
-			}
-			if(data[i]=="/")console.log(flag);
 			if(flag=="/"){
 				if(data[i]=="\n"){
 					flag="";
@@ -254,10 +246,8 @@ var myScript = {
 						res+="/"
 					}
 					if(data[i]==flag){
-						console.log("end",data.substr(i,5),line,c)
 						flag="";
 					}else if((data[i]=="\""||data[i]=="'")&&flag==""){
-						console.log("start",data.substr(i,5),line,c)
 						flag=data[i];
 					}
 					l_flag="";
