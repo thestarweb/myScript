@@ -160,15 +160,16 @@ var myScript = {
 			if (!this.page) {
 				return;
 			}
-			if (!this.data) {
-				this.data = null;
-			}
 			if (!this.type) {
 				this.type = this.data?'POST':"GET";
 			}
 			this.ajax.open(this.type, this.page,this.keep?false:true);
-			//定义http头
-			if(this.setHead){
+			if (!this.data) {
+				this.data = null;
+			}else if(typeof(this.data)!="string"){
+				this.data=JSON.stringify(this.data);
+				this.ajax.setRequestHeader("Content-Type","application/json");
+			}else{
 				this.ajax.setRequestHeader("content-type", "application/x-www-form-urlencoded");
 			};
 			//this.ajax.setRequestHeader('X_REQUESTED_WITH','ajax');
