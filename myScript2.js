@@ -545,6 +545,26 @@ var myScript = {
 		});
 		return html;
 	},
+	lang:(function(){
+		var langs=[];
+		return {
+			set:function(l){
+				langs=l;
+			},
+			get:function(iString){
+				var iList=iString.split(".");
+				var item=langs;
+				for(var i=0;i<iList.length;i++){
+					if(iList[i] i item){
+						item=item[iList[i]];
+					}else{
+						return iString;
+					}
+				}
+				return item;
+			}
+		}
+	})()
 };
 (function(){
 	var isload=false;
@@ -573,3 +593,4 @@ $.set=function(type,p){
 	return myScript.set_dom(type,p);
 }
 $.remove=myScript.remove_dom;
+$.lang=myScript.lang.get;
