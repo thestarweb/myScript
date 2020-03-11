@@ -555,7 +555,7 @@ var myScript = {
 				var iList=iString.split(".");
 				var item=langs;
 				for(var i=0;i<iList.length;i++){
-					if(iList[i] i item){
+					if(iList[i] in item){
 						item=item[iList[i]];
 					}else{
 						return iString;
