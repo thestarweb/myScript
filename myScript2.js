@@ -545,26 +545,107 @@ var myScript = {
 		});
 		return html;
 	},
+	create_app:function(dom,c){
+		// var template document.createElement('div');
+		// template.innerHTML=template_get_html(name);
+		//var vdom=document.createDocumentFragment();
+		var bind=function(srcObj,srcName,toObj,toName){
+			toObj[toName]=srcObj[srcName];
+			myScript.watch(srcObj,srcName,function(value){
+				toObj[toName]=value;
+			});
+		}
+		var build=function(node,c){
+			var list=[];
+			for(var i=0;i<node.childNodes.length;i++){
+				list.push(node.childNodes[i]);
+			}
+			for(var i=0;i<list.length;i++){
+				switch(list[i].nodeType){
+					case 1:
+						console.log(list[i].tagName);
+						var attributes=list[i].attributes;
+						for(var j=0;j<attributes.length;j++){
+							// console.log(attributes[j].name,attributes[j].value)
+							if(attributes[j].name.indexOf(':')==0){
+								var aNode=document.createAttribute(attributes[j].name.substr(1));
+								//aNode.value=c[attributes[j].value];
+								bind(c,attributes[j].value,aNode,"value");
+								list[i].setAttributeNode(aNode);
+							}
+						}
+						break;
+					case 3:
+						var str=list[i].nodeValue;
+						do{
+							var index=str.indexOf('{{');
+							if(index==-1)break;
+							if(index!=0){
+								node.insertBefore(document.createTextNode(str.substr(0,index)),list[i]);
+							}
+							str=str.substr(index+2);
+							index=str.indexOf("}}");
+							if(index==-1) index=str.length;
+							var bindname=str.substr(0,index);
+							var tNode=document.createTextNode(c[bindname]);
+							bind(c,bindname,tNode,"nodeValue");
+							node.insertBefore(tNode,list[i]);
+							str=str.substr(index+2);
+						}while(str);
+						if(str) node.insertBefore(document.createTextNode(str),list[i]);
+						node.removeChild(list[i]);
+						break;
+				}
+			}
+		}
+		build(dom,c);
+	},
 	lang:(function(){
 		var langs=[];
 		return {
 			set:function(l){
 				langs=l;
 			},
-			get:function(iString){
+			get:function(iString,c){
 				var iList=iString.split(".");
 				var item=langs;
 				for(var i=0;i<iList.length;i++){
-					if(iList[i] in item){
+					if(typeof item=="object" && iList[i] in item){
 						item=item[iList[i]];
 					}else{
 						return iString;
 					}
 				}
+				for(var i in c){
+					item=item.replace(i,c[i]);
+				}
 				return item;
 			}
 		}
-	})()
+	})(),
+	watch:function (obj,name,callback){
+		if(!obj.__ob__){
+			Object.defineProperty(obj,"__ob__",{ value : {}, enumerable: false });
+		}
+		if(obj.__ob__[name]){
+			obj.__ob__[name].push(callback);
+		}else{
+			obj.__ob__[name]=[callback];
+			var value=obj[name];
+			Object.defineProperty(obj,name,{
+				get:function(){
+					return value;
+				},
+				set:function(new_value){
+					for(var i in obj.__ob__[name]){
+						obj.__ob__[name][i](new_value,value);
+					}
+					value=new_value;
+				},
+				enumerable:true
+			});
+		}
+	}
 };
 (function(){
 	var isload=false;
