@@ -545,17 +545,12 @@ var myScript = {
 		});
 		return html;
 	},
-	create_app:function(dom,c){
+	create_app:function(dom,model,props){
+		var app={$cblist:[],$el:dom};
 		// var template document.createElement('div');
 		// template.innerHTML=template_get_html(name);
 		//var vdom=document.createDocumentFragment();
-		var bind=function(srcObj,srcName,toObj,toName){
-			toObj[toName]=srcObj[srcName];
-			myScript.watch(srcObj,srcName,function(value){
-				toObj[toName]=value;
-			});
-		}
-		var build=function(node,c){
+		var build=function(node,c,$cblist){
 			var list=[];
 			for(var i=0;i<node.childNodes.length;i++){
 				list.push(node.childNodes[i]);
@@ -563,20 +558,53 @@ var myScript = {
 			for(var i=0;i<list.length;i++){
 				switch(list[i].nodeType){
 					case 1:
-						console.log(list[i].tagName);
+						//console.log(list[i].tagName);
+						var tagName=list[i].tagName.toLowerCase();
+						var childApp=null;
+						if(tagName in myScript.template_list){
+							//子控件
+							childApp={template:myScript.template_get_html(tagName),model:{}};
+						}else{
+							build(list[i],c,$cblist);
+						}
 						var attributes=list[i].attributes;
-						for(var j=0;j<attributes.length;j++){
-							// console.log(attributes[j].name,attributes[j].value)
-							if(attributes[j].name.indexOf(':')==0){
-								var aNode=document.createAttribute(attributes[j].name.substr(1));
-								//aNode.value=c[attributes[j].value];
-								bind(c,attributes[j].value,aNode,"value");
-								list[i].setAttributeNode(aNode);
+						if(childApp){
+							//读取子控件内容
+							var cc={};
+							for(var j=0;j<attributes.length;j++){
+								if(attributes[j].name.indexOf(':')==0){
+									$cblist.push(myScript.bind(c,attributes[j].value,cc,attributes[j].name.substr(1)))
+								}else{
+									cc[attributes[j].name]=attributes[j].value;
+								}
+							}
+							//模板文本转DOM
+							var temp=document.createElement("div");
+							temp.innerHTML=childApp.template;
+							// var vdom=document.createDocumentFragment();
+							// while(temp.childNodes.length){
+							// 	vdom.appendChild(temp.childNodes[0]);
+							// }
+							//创建子控件
+							var app=myScript.create_app(temp.firstElementChild,childApp.model,cc);
+							//将子控件dom插入原有位置
+							node.insertBefore(temp.firstElementChild,list[i]);
+							//删掉原来的节点
+							node.removeChild(list[i]);
+						}else{
+							for(var j=0;j<attributes.length;j++){
+								if(attributes[j].name.indexOf(':')==0){
+									var aNode=document.createAttribute(attributes[j].name.substr(1));
+									//aNode.value=c[attributes[j].value];
+									$cblist.push(myScript.bind(c,attributes[j].value,aNode,"value"));
+									list[i].setAttributeNode(aNode);
+								}
 							}
 						}
 						break;
 					case 3:
 						var str=list[i].nodeValue;
+						//debugger;
 						do{
 							var index=str.indexOf('{{');
 							if(index==-1)break;
@@ -588,7 +616,7 @@ var myScript = {
 							if(index==-1) index=str.length;
 							var bindname=str.substr(0,index);
 							var tNode=document.createTextNode(c[bindname]);
-							bind(c,bindname,tNode,"nodeValue");
+							$cblist.push(myScript.bind(c,bindname,tNode,"nodeValue"));
 							node.insertBefore(tNode,list[i]);
 							str=str.substr(index+2);
 						}while(str);
@@ -598,7 +626,8 @@ var myScript = {
 				}
 			}
 		}
-		build(dom,c);
+		build(dom,props,app.$cblist);
+		return app;
 	},
 	lang:(function(){
 		var langs=[];
@@ -645,6 +674,14 @@ var myScript = {
 				enumerable:true
 			});
 		}
+	},
+	bind:function(srcObj,srcName,toObj,toName){
+		toObj[toName]=srcObj[srcName];
+		var f=function(value){
+			toObj[toName]=value;
+		};
+		myScript.watch(srcObj,srcName,f);
+		return f;
 	}
 };
 (function(){
